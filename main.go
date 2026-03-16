@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"os"
 
+	"github.com/deep123845/blogaggregator/internal/command"
 	"github.com/deep123845/blogaggregator/internal/config"
 )
 
@@ -12,16 +13,20 @@ func main() {
 	if err != nil {
 		log.Fatalf("error reading config: %v", err)
 	}
-	fmt.Printf("Config: %+v\n", cfg)
 
-	err = cfg.SetUser("deep")
-	if err != nil {
-		log.Fatalf("error writing config: %v", err)
+	s := command.State{Config: &cfg}
+	cmds := command.Commands{Command_mapping: make(map[string]func(*command.State, command.Command) error)}
+	cmds.Register("login", command.HandlerLogin)
+
+	args := os.Args
+
+	if len(args) < 2 {
+		log.Fatalf("expected at least 2 arguments, exiting")
 	}
 
-	cfg, err = config.Read()
+	cmd := command.Command{Name: args[1], Args: args[2:]}
+	err = cmds.Run(&s, cmd)
 	if err != nil {
-		log.Fatalf("error reading config: %v", err)
+		log.Fatalf("error running command: %v", err)
 	}
-	fmt.Printf("Config: %+v\n", cfg)
 }
