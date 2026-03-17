@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/deep123845/blogaggregator/internal/database"
+	"github.com/deep123845/blogaggregator/internal/rss"
 	"github.com/google/uuid"
 )
 
@@ -65,6 +66,19 @@ func HandlerUsers(s *State, _ Command) error {
 			fmt.Printf("* %s\n", user.Name)
 		}
 	}
+
+	return nil
+}
+
+func HandleAgg(_ *State, _ Command) error {
+	url := "https://www.wagslane.dev/index.xml"
+
+	feed, err := rss.FetchFeed(context.Background(), url)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%+v\n", feed)
 
 	return nil
 }
