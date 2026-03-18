@@ -169,6 +169,30 @@ func HandlerFollowing(s *State, _ Command, user database.User) error {
 	return nil
 }
 
+func HandlerUnfollow(s *State, cmd Command, user database.User) error {
+	if len(cmd.Args) != 1 {
+		return fmt.Errorf("Unfollow command expects one argument")
+	}
+
+	feed, err := s.DB.GetFeedByURL(context.Background(), cmd.Args[0])
+	if err != nil {
+		return err
+	}
+
+	feed_follow_to_delete := database.DeleteFeedFollowParams{
+		UserID: user.ID,
+		FeedID: feed.ID,
+	}
+	err = s.DB.DeleteFeedFollow(context.Background(), feed_follow_to_delete)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Deleted feed: %s from user: %s's follow list", feed.Name, user.Name)
+
+	return nil
+}
+
 func (c *Commands) Run(s *State, cmd Command) error {
 	handler, ok := c.Command_mapping[cmd.Name]
 	if !ok {
