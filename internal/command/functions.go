@@ -83,14 +83,9 @@ func HandlerAgg(_ *State, _ Command) error {
 	return nil
 }
 
-func HandlerAddFeed(s *State, cmd Command) error {
+func HandlerAddFeed(s *State, cmd Command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("Add Feed Command requires 2 arguments: Name, URL")
-	}
-
-	user, err := s.DB.GetUser(context.Background(), s.Config.CurrentUserName)
-	if err != nil {
-		return err
 	}
 
 	newFeed := database.CreateFeedParams{
@@ -106,7 +101,7 @@ func HandlerAddFeed(s *State, cmd Command) error {
 		return err
 	}
 
-	HandlerFollow(s, Command{Name: "", Args: []string{feed.Url}})
+	HandlerFollow(s, Command{Name: "", Args: []string{feed.Url}}, user)
 
 	fmt.Printf("%+v\n", feed)
 
@@ -133,17 +128,12 @@ func HandlerFeeds(s *State, _ Command) error {
 	return nil
 }
 
-func HandlerFollow(s *State, cmd Command) error {
+func HandlerFollow(s *State, cmd Command, user database.User) error {
 	if len(cmd.Args) != 1 {
 		return fmt.Errorf("Follow command expects only one argument")
 	}
 
 	feed, err := s.DB.GetFeedByURL(context.Background(), cmd.Args[0])
-	if err != nil {
-		return err
-	}
-
-	user, err := s.DB.GetUser(context.Background(), s.Config.CurrentUserName)
 	if err != nil {
 		return err
 	}
@@ -165,12 +155,7 @@ func HandlerFollow(s *State, cmd Command) error {
 	return nil
 }
 
-func HandlerFollowing(s *State, _ Command) error {
-	user, err := s.DB.GetUser(context.Background(), s.Config.CurrentUserName)
-	if err != nil {
-		return err
-	}
-
+func HandlerFollowing(s *State, _ Command, user database.User) error {
 	feed_follows, err := s.DB.GetFeedFollowsByUser(context.Background(), user.ID)
 	if err != nil {
 		return err
@@ -195,4 +180,15 @@ func (c *Commands) Run(s *State, cmd Command) error {
 
 func (c *Commands) Register(name string, f func(*State, Command) error) {
 	c.Command_mapping[name] = f
+}
+
+func MiddlewareLoggedIn(handler func(s *State, cmd Command, user database.User) error) func(*State, Command) error {
+	return func(s *State, cmd Command) error {
+		user, err := s.DB.GetUser(context.Background(), s.Config.CurrentUserName)
+		if err != nil {
+			return err
+		}
+
+		return handler(s, cmd, user)
+	}
 }
