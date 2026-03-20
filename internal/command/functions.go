@@ -3,6 +3,7 @@ package command
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/deep123845/blogaggregator/internal/database"
@@ -195,6 +196,29 @@ func HandlerUnfollow(s *State, cmd Command, user database.User) error {
 	}
 
 	fmt.Printf("Deleted feed: %s from user: %s's follow list", feed.Name, user.Name)
+
+	return nil
+}
+
+func HandlerBrowse(s *State, cmd Command, user database.User) error {
+	limit := 2
+	if len(cmd.Args) > 0 {
+		var err error
+		limit, err = strconv.Atoi(cmd.Args[0])
+		if err != nil {
+			return err
+		}
+	}
+
+	posts, err := s.DB.GetPostsForUser(context.Background(), database.GetPostsForUserParams{UserID: user.ID, Limit: int32(limit)})
+	if err != nil {
+		return err
+	}
+
+	for _, post := range posts {
+		fmt.Printf("Title: %s\n", post.Title)
+		fmt.Printf("%s\n\n", post.Description)
+	}
 
 	return nil
 }
