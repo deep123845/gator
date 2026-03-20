@@ -5,9 +5,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/deep123845/blogaggregator/internal/command"
-	"github.com/deep123845/blogaggregator/internal/config"
-	"github.com/deep123845/blogaggregator/internal/database"
+	"github.com/deep123845/blog-aggregator/internal/command"
+	"github.com/deep123845/blog-aggregator/internal/config"
+	"github.com/deep123845/blog-aggregator/internal/database"
 
 	_ "github.com/lib/pq"
 )

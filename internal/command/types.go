@@ -1,8 +1,8 @@
 package command
 
 import (
-	"github.com/deep123845/blogaggregator/internal/config"
-	"github.com/deep123845/blogaggregator/internal/database"
+	"github.com/deep123845/blog-aggregator/internal/config"
+	"github.com/deep123845/blog-aggregator/internal/database"
 )
 
 type State struct {

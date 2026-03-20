@@ -1,4 +1,4 @@
-module github.com/deep123845/blogaggregator
+module github.com/deep123845/blog-aggregator
 
 go 1.26.0
 
