@@ -1,4 +1,4 @@
-module github.com/deep123845/blog-aggregator
+module github.com/deep123845/gator
 
 go 1.26.0
 

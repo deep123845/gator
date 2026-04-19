@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/deep123845/blog-aggregator/internal/database"
-	"github.com/deep123845/blog-aggregator/internal/rss"
+	"github.com/deep123845/gator/internal/database"
+	"github.com/deep123845/gator/internal/rss"
 	"github.com/google/uuid"
 )
 
