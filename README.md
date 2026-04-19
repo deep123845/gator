@@ -6,22 +6,26 @@ Gator is a cli tool which aggregates and displays blog posts from rss feeds.
 Go 1.26.0
 ## Instructions
 Run the command:
-> go install https://github.com/deep123845/gator@latest:w
+    go install https://github.com/deep123845/gator@latest
 
 # Usage
-> gator {command} {args}
+    gator {command} {args}
 
 ## Commands
-> gator reset
+    gator reset
+
 Clears the DB of all users, feeds, and posts
 
-> gator register {name}
+    gator register {name}
+
 Creates a new user with the given name and logs in to it
 
-> gator login {name}
+    gator login {name}
+
 Logs in to the given user
 
-> gator users
+    gator users
+
 Displays a list of all users in the DB
 
 # References
